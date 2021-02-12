@@ -12,7 +12,7 @@ const summary = {
         summary.completed.push(num);
     },
     summarize: () => {
-        console.log(`Line Errors: ${summary.errorLine} \n Line Success: ${summary.completed}`)
+        console.log(`Line Errors: ${summary.errorLine} \n Line Success: ${JSON.stringify(summary.completed)}`)
     }
 }
 

@@ -2,7 +2,10 @@ const fs = require('fs');
 const readline = require('readline');
 const sender = require('./sendReq');
 const validate = require('./validator');
+const generateCSV = require('./generateCSV');
 const summary = require('./summary');
+
+let revisedCSV = []
 
 const readLines = async () => {
         let productPromises = []
@@ -17,6 +20,7 @@ const readLines = async () => {
         let lineCount = 1
         for await (const line of rl) {
             if (skipper === true) {
+                revisedCSV.push(line)
                 skipper = false
             } else {
             productPromises.push(new Promise((resolve, reject) => {
@@ -26,6 +30,7 @@ const readLines = async () => {
                 if (validator === 'success') {
                     sender(currentLine, lineCount).then(data => resolve('data: ' + data))
                 } else {
+                    revisedCSV.push(line)
                     reject('validation error')
                 };
             }));
@@ -39,9 +44,10 @@ const runAndSummarize = async () => {
     await readLines().then((promises) => {
         console.log(promises)
         Promise.allSettled(promises)
-        .then(values => {
-            console.log('Values: ' + values)
+        .then(() => {
+            console.log(revisedCSV)
             summary.summarize()
+            generateCSV(revisedCSV)
         })
         .catch(e => {
             console.log(e)
