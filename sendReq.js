@@ -1,10 +1,11 @@
 const https = require('https');
 const dotenv = require('dotenv');
-dotenv.config()
-const { getVintage, imageFormatter } = require('./formatters')
+dotenv.config();
+const { getVintage, imageFormatter } = require('./formatters');
+const summary = require('./summary');
 
-const sender = (product) => {
-    const body = JSON.stringify(
+const sender = (product, lineCount) => {
+    const postData = JSON.stringify(
         {
             "product": {
                 "title": `${product[4]} ${product[0]} ${product[1]} ${product[2]}`,
@@ -28,7 +29,7 @@ const sender = (product) => {
                 ],
                 "metafields": [
                     {
-                    "key": "type",
+                    "key": "typeee",
                     "value": product[9],
                     "value_type": "string",
                     "namespace": "product-attributes"
@@ -90,28 +91,51 @@ const sender = (product) => {
             'Cookie': `${process.env.COOKIE}`
         },
         'maxRedirects': 20
+    };
+    return httpsRequest(options, postData, lineCount)
+        .catch(e => console.log(e))
     }
-    
-    const req = https.request(options, (res) => {
-        let chunks = [];
-      
-        res.on("data", (chunk) => {
-            chunks.push(chunk);
-            process.stdout.write(chunk);
+
+const httpsRequest = (options, postData, lineCount) => {
+    return new Promise((resolve, reject) => {
+        const req = https.request(options, (res) => {
+
+            if (res.statusCode < 200 || res.statusCode >= 300) {
+                // return reject(new Error('StatusCode= ' + res.statusCode));
+                summary.addErrorLine(lineCount)
+                return reject(('StatusCode= ' + res.statusCode + ' ' + lineCount));
+            }
+            
+            let chunks = [];
+            res.on("data", (chunk) => {
+                chunks.push(chunk);
+            });
+          
+            res.on("end", () => {
+                try {
+                    summary.addCompleted(lineCount)
+                    chunks = Buffer.concat(chunks);
+                } catch(e) {
+                    summary.addErrorLine(lineCount)
+                    reject(e);
+                }
+                resolve(chunks)
+            });
+          
+            res.on("error", (error) => {
+                summary.addErrorLine(lineCount)
+                reject(error);
+            });
         });
-      
-        res.on("end", () => {
-            let body = Buffer.concat(chunks);
-        });
-      
-        res.on("error", (error) => {
-            console.error("error");
-        });
+
+        
+        if (postData) {
+            req.write(postData);
+        }
+        
+        req.end();
+
     });
-    
-    req.write(body)
-    
-    req.end()
-}
+};
 
 module.exports = sender;
