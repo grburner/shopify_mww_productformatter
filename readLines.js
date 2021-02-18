@@ -37,9 +37,16 @@ const readLines = async () => {
 };
 
 const runner = (backlog) => {
-    if (backlog.length === 0) return
-    else if (backlog.length === 1) {
-        console.log('BACKLOG LENGTH 1 ' + JSON.stringify(backlog))
+    if (backlog.length === 1) {
+        Promise.allSettled(productPromises)
+        .then(() => {
+            console.log(revisedCSV)
+            summary.summarize()
+            generateCSV(revisedCSV)
+        })
+        .catch(e => {
+            console.log(e)
+        });
     }
     else {
         if (bucket < 9500) {
@@ -60,20 +67,4 @@ const runner = (backlog) => {
     }
 }
 
-const runAndSummarize = async () => {
-    await readLines().then((promises) => {
-        console.log(promises)
-        Promise.allSettled(promises)
-        .then(() => {
-            console.log(revisedCSV)
-            summary.summarize()
-            generateCSV(revisedCSV)
-        })
-        .catch(e => {
-            console.log(e)
-        });
-    }); 
-};
-
-// runAndSummarize();
-readLines()
+readLines();
