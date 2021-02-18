@@ -5,10 +5,10 @@ const generateCSV = (data) => {
     data.forEach(line => {
         newLineData += line += '\r\n'
     });
-    console.log(newLineData)
+    // console.log(newLineData)
     fs.writeFile('errorFile.csv', newLineData, (err) => {
         if (err) throw err;
-        console.log('the file has been saved')
+        // console.log('the file has been saved')
     })
 }
 
