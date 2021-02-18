@@ -24,11 +24,12 @@ const readLines = async () => {
                 skipper = false
             } else {
             productPromises.push(new Promise((resolve, reject) => {
-                const currentLine = line.split(',')
+                const currentLine = line.split('\t')
                 const validator = validate(currentLine, lineCount)
                 
                 if (validator === 'success') {
-                    sender(currentLine, lineCount).then(data => resolve('data: ' + data))
+                    sender(currentLine, lineCount)
+                    .then(data => resolve('data: ' + data))
                 } else {
                     revisedCSV.push(line)
                     reject('validation error')
@@ -51,14 +52,8 @@ const runAndSummarize = async () => {
         })
         .catch(e => {
             console.log(e)
-        })
-    }) 
-}
-    //Promise.allSettled(productPromises).then((vals) => {
-    //    console.log(vals)
-    // console.log(`There were errors with ${summary.errors.length} products: \n ${summary.errors}`)
-    // if (summary.completed.length > 0) {console.log(`These lines were completed: ${summary.completed}`)} else {console.log(`No products entries were sent`)}
-    // console.log('Error Line List: ' + summary.errorLine)
-    //});
+        });
+    }); 
+};
 
 runAndSummarize();

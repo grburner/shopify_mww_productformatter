@@ -4,15 +4,21 @@ dotenv.config();
 const { getVintage, imageFormatter } = require('./formatters');
 const summary = require('./summary');
 
+const formatProduct = (product) => {
+    let productName = `${product[4]} ${product[0]} ${product[1]} ${product[2]} ${product[3]}`
+    return productName.replace(/ +(?= )/g,'')
+}
+
 const sender = (product, lineCount) => {
     const postData = JSON.stringify(
         {
             "product": {
-                "title": `${product[4]} ${product[0]} ${product[1]} ${product[2]}`,
+                "title": `${formatProduct(product)}`,
                 "body_html": product[7],
                 "vendor": "Mad Wild Wine",
                 "product_type": "",
-                "status": product[16],
+                // "status": `${product[18]}`,
+                "status": 'active',
                 "images": [
                     {
                         "src": `${imageFormatter(product[17])}`
@@ -24,13 +30,14 @@ const sender = (product, lineCount) => {
                 ],
                 "variants": [
                     {
-                        "price": product[6].replace("$", '')
+                        "price": product[6].replace("$", ''),
+                        "inventory": 1  // add in inventory item id
                     }
                 ],
                 "metafields": [
                     {
-                    "key": "typeee",
-                    "value": product[9],
+                    "key": "type",
+                    "value": product[8],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     },
@@ -42,13 +49,13 @@ const sender = (product, lineCount) => {
                     },
                     {
                     "key": "country",
-                    "value": product[12],
+                    "value": product[11],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     },
                     {
                     "key": "region",
-                    "value": product[11],
+                    "value": product[10],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     },
@@ -60,13 +67,13 @@ const sender = (product, lineCount) => {
                     },
                     {
                     "key": "grape",
-                    "value": product[10],
+                    "value": product[9],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     },
                         {
                     "key": "style",
-                    "value": product[13],
+                    "value": product[12],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     },
@@ -92,14 +99,15 @@ const sender = (product, lineCount) => {
         },
         'maxRedirects': 20
     };
+
     return httpsRequest(options, postData, lineCount)
         .catch(e => console.log(e))
     }
 
 const httpsRequest = (options, postData, lineCount) => {
+    console.log(postData)
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
-
             if (res.statusCode < 200 || res.statusCode >= 300) {
                 // return reject(new Error('StatusCode= ' + res.statusCode));
                 summary.addErrorLine(lineCount)
@@ -139,3 +147,5 @@ const httpsRequest = (options, postData, lineCount) => {
 };
 
 module.exports = sender;
+
+

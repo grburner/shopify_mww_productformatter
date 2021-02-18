@@ -2,8 +2,8 @@ const summary = require('./summary');
 
 const validators = {
     // "format": {"accepted": [375, 750, 1500], "index": 5, "required": "yes"},
-    "type": {"accepted": ["red", "white", "rose", "sparkling", "fortified"], "index": 8, "required": "yes"},
-    "grape": {"accepted": ["pinot noir", "bordeaux blend", "chardonnay", "cabernet sauvignon"], "index": 9, "required": "yes"},
+    // "type": {"accepted": ["red", "white", "rose", "sparkling", "fortified"], "index": 8, "required": "yes"},
+    // "grape": {"accepted": ["pinot noir", "bordeaux blend", "chardonnay", "cabernet sauvignon"], "index": 9, "required": "yes"},
     // "country": {"accepted": ["USA", "france", "italy", "germany"], "index": 11, "required": "yes"},
     // "style": {"accepted": ["medium-bodied", "full-bodied", "grower champagne"], "index": 12, "required": "yes"},
     // "style 2": {"accepted": ["elegant", "classic", "natural"], "index": 13, "required": "yes"},
