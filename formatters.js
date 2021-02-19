@@ -13,6 +13,10 @@ const formatters = {
     },
     imageFormatter: (src) => {
         return src.replace("/view?usp=sharing", "").replace("file/d/", "uc?id=")
+    },
+    formatProduct: (product) => {
+        let productName = `${product[4]} ${product[0]} ${product[1]} ${product[2]} ${product[3]}`
+        return productName.replace(/ +(?= )/g,'')
     }
 }
 

@@ -1,43 +1,36 @@
 const https = require('https');
 const dotenv = require('dotenv');
 dotenv.config();
-const { getVintage, imageFormatter } = require('./formatters');
+const { getVintage, imageFormatter, formatProduct } = require('./formatters');
 const summary = require('./summary');
-
-const formatProduct = (product) => {
-    let productName = `${product[4]} ${product[0]} ${product[1]} ${product[2]} ${product[3]}`
-    return productName.replace(/ +(?= )/g,'')
-}
 
 const sender = (product, lineCount) => {
     const postData = JSON.stringify(
         {
             "product": {
                 "title": `${formatProduct(product)}`,
-                "body_html": product[7],
+                "body_html": product[5],
                 "vendor": "Mad Wild Wine",
                 "product_type": "",
-                // "status": `${product[18]}`,
-                "status": 'active',
+                "status": `${product[15]}`,
                 "images": [
                     {
-                        "src": `${imageFormatter(product[17])}`
+                        "src": `${imageFormatter(product[14])}`
                     }
                 ],
                 "tags": [
-                        product[15] ? product[15] : '',
+                        product[13] ? product[13] : '',
                         `${getVintage(product[4])}`
                 ],
                 "variants": [
-                    {
-                        "price": product[6].replace("$", ''),
-                        "inventory": 1  // add in inventory item id
-                    }
+                    product[17] ? {"option1": product[17], "price": product[18].replace("$", "")} : '',
+                    product[20] ? {"option1": product[20], "price": product[21].replace("$", "")} : '',
+                    product[23] ? {"option1": product[23], "price": product[25].replace("$", "")} : ''
                 ],
                 "metafields": [
                     {
                     "key": "type",
-                    "value": product[8],
+                    "value": product[6],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     },
@@ -49,13 +42,13 @@ const sender = (product, lineCount) => {
                     },
                     {
                     "key": "country",
-                    "value": product[11],
+                    "value": product[9],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     },
                     {
                     "key": "region",
-                    "value": product[10],
+                    "value": product[8],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     },
@@ -67,19 +60,19 @@ const sender = (product, lineCount) => {
                     },
                     {
                     "key": "grape",
-                    "value": product[9],
+                    "value": product[7],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     },
                         {
                     "key": "style",
-                    "value": product[12],
+                    "value": product[10],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     },
                     {
                     "key": "farming",
-                    "value": product[14],
+                    "value": product[12],
                     "value_type": "string",
                     "namespace": "product-attributes"
                     }

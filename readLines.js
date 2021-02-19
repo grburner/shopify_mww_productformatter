@@ -50,6 +50,7 @@ const runner = (backlog) => {
     }
     else {
         if (bucket < 9500) {
+            console.log(backlog[0])
             backlog.shift() 
             productPromises.push(new Promise((resolve, reject) => {
                 bucket += 500;
