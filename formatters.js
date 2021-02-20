@@ -17,6 +17,13 @@ const formatters = {
     formatProduct: (product) => {
         let productName = `${product[4]} ${product[0]} ${product[1]} ${product[2]} ${product[3]}`
         return productName.replace(/ +(?= )/g,'')
+    },
+    getBottleSizes: (product) => {
+        let tags = []
+        if (product[17]) {tags.push(product[17])}
+        if (product[20]) {tags.push(product[20])}
+        if (product[23]) {tags.push(product[23])}
+        return tags
     }
 }
 

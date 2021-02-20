@@ -1,7 +1,7 @@
 const https = require('https');
 const dotenv = require('dotenv');
 dotenv.config();
-const { getVintage, imageFormatter, formatProduct } = require('./formatters');
+const { getVintage, imageFormatter, formatProduct, getBottleSizes } = require('./formatters');
 const summary = require('./summary');
 
 const sender = (product, lineCount) => {
@@ -19,8 +19,10 @@ const sender = (product, lineCount) => {
                     }
                 ],
                 "tags": [
-                        product[13] ? product[13] : '',
-                        `${getVintage(product[4])}`
+                        product[13] ? product[13] : '', // featured collection
+                        `${getVintage(product[4])}`, // vintage
+                        `${getBottleSizes(product)}`, // bottle sizes
+                        product[8] ? product[8]: '' // product region
                 ],
                 "variants": [
                     product[17] ? {"option1": product[17], "price": product[18].replace("$", "")} : '',
