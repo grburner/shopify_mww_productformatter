@@ -25,9 +25,15 @@ const sender = (product, lineCount) => {
                         product[8] ? product[8]: '' // product region
                 ],
                 "variants": [
-                    product[17] ? {"option1": product[17], "price": product[18].replace("$", "")} : '',
-                    product[20] ? {"option1": product[20], "price": product[21].replace("$", "")} : '',
-                    product[23] ? {"option1": product[23], "price": product[25].replace("$", "")} : ''
+                    product[17] ? {
+                        "inventory_management": "shopify",
+                        "option1": product[17], "price": product[18].replace("$", "")} : '',
+                    product[20] ? {
+                        "inventory_management": "shopify",
+                        "option1": product[20], "price": product[21].replace("$", "")} : '',
+                    product[23] ? {
+                        "inventory_management": "shopify",
+                        "option1": product[23], "price": product[25].replace("$", "")} : ''
                 ],
                 "metafields": [
                     {
@@ -104,7 +110,6 @@ const httpsRequest = (options, postData, lineCount) => {
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
             if (res.statusCode < 200 || res.statusCode >= 300) {
-                // return reject(new Error('StatusCode= ' + res.statusCode));
                 summary.addErrorLine(lineCount)
                 return reject(('StatusCode= ' + res.statusCode + ' ' + lineCount));
             }
@@ -118,6 +123,7 @@ const httpsRequest = (options, postData, lineCount) => {
                 try {
                     summary.addCompleted(lineCount)
                     chunks = Buffer.concat(chunks);
+                    console.log(chunks.toString())
                 } catch(e) {
                     summary.addErrorLine(lineCount)
                     reject(e);
